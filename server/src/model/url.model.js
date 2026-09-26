@@ -5,10 +5,10 @@ const urlSchema = new Schema({
         type: String,
         required: true
     },
-    shortUrl:{
-        type: String,
-        required: true
-    },
+    // shortUrl:{
+    //     type: String,
+    //     required: true
+    // },
     shortCode:{
         type: String,
         required: true
