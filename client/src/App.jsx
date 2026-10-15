@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
@@ -10,38 +10,86 @@ function App() {
   const [shortUrl, setShortUrl] = useState('')
 
   const [status, setStatus] = useState('')
+  const [statusType, setStatusType] = useState('info')
   const [isLoading, setIsLoading] = useState(false)
+
+
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(shortUrl)
+    setStatus('Copied to clipboard.')
+    setStatusType('success')
+  }
+
+
+  let timeout;
+  const isValidUrl = (url) => {
+
+    function debounce(url) {
+      clearTimeout(timeout);
+
+      timeout = setTimeout(
+        () => {
+          try {
+            console.log('Validating URL:', url);
+            const urlObj = new URL(url);
+            ["http:", "https:"].includes(urlObj.protocol) ? setStatus('') : setStatus('Enter a valid URL');
+          } catch (err) {
+            setStatus('Enter a valid URL');
+          }
+        },
+        300
+      )
+    }
+
+    debounce(url);
+
+    // debounce the validation to avoid excessive calls during typing
+    // const debounce = (func, wait) => {
+    //   let timeout;
+    //   return (...args) => {
+    //     clearTimeout(timeout);
+    //     timeout = setTimeout(() => func.apply(this, args), wait);
+    //   };
+    // };
+
+
+  }
+
+  // useEffect run when it's depencdencies change , identify changes by comparing old and current states 
+  // useEffect(() => {
+  //   console.log('Status changed:', status);
+  // }, [status, url]);
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     setStatus('')
+    setStatusType('info')
     setShortUrl('')
 
     setIsLoading(true)
     try {
-      const {data} = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/url`, {originalUrl: url});
-      if(data.success){
+      const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/url`, { originalUrl: url });
+      if (data.success) {
         setShortUrl(data.shortUrl);
         setStatus('Your shorter link is ready.');
-      }else{
+        setStatusType('success')
+      } else {
         setStatus(data.message || 'Unable to shorten that URL');
+        setStatusType('error')
       }
-    } catch(error) {
+    } catch (error) {
       setStatus('Enter a valid URL, including https://');
+      setStatusType('error')
       console.error('Error shortening URL:', error);
       return
-    }finally{
+    } finally {
       setIsLoading(false);
     }
 
 
 
 
-  }
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(shortUrl)
-    setStatus('Copied to clipboard.')
   }
 
   return (
@@ -54,12 +102,16 @@ function App() {
 
         <form className="shortener-form" onSubmit={handleSubmit}>
           <label htmlFor="url">Paste your long URL</label>
+
           <div className="input-row">
             <input
               id="url"
               type="url"
               value={url}
-              onChange={(event) => setUrl(event.target.value)}
+              onChange={(event) => {
+                setUrl(event.target.value)
+                isValidUrl(event.target.value);
+              }}
               placeholder="https://example.com/your-long-link"
               required
             />
@@ -68,6 +120,15 @@ function App() {
             </button>
           </div>
         </form>
+
+        {status && (
+          <p className={`status status-${statusType}`} role={statusType === 'error' ? 'alert' : 'status'}>
+            <span className="status-icon" aria-hidden="true">
+              {statusType === 'error' ? '!' : '✓'}
+            </span>
+            <span>{status}</span>
+          </p>
+        )}
 
         {shortUrl && (
           <div className="result" aria-live="polite">
@@ -80,8 +141,6 @@ function App() {
             </button>
           </div>
         )}
-
-        {status && <p className="status" role="status">{status}</p>}
 
       </section>
       <p className="footer-note">Simple links. Less clutter.</p>
