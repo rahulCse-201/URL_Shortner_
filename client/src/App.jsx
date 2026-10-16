@@ -1,17 +1,25 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { logoutSession, restoreSession } from './store/authSlice'
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import './App.css'
 
 function App() {
+  const dispatch = useDispatch()
+  const { user, token, status: authStatus } = useSelector(state => state.auth)
   const [url, setUrl] = useState('')
   const [shortUrl, setShortUrl] = useState('')
 
   const [status, setStatus] = useState('')
   const [statusType, setStatusType] = useState('info')
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    if (token && authStatus === 'idle') dispatch(restoreSession())
+  }, [token, authStatus, dispatch])
 
 
 
@@ -95,6 +103,9 @@ function App() {
   return (
     <main className="page-shell">
       <section className="shortener-card" aria-labelledby="page-title">
+        {user
+          ? <button className="sign-in-button" type="button" onClick={() => dispatch(logoutSession())}>Sign out</button>
+          : !token && <a className="sign-in-button" href="/login">Sign in</a>}
         <div className="brand-mark" aria-hidden="true">/</div>
         <p className="eyebrow">Linksmith</p>
         <h1 id="page-title">Make links easier to share.</h1>
@@ -119,6 +130,12 @@ function App() {
               {isLoading ? 'Making link...' : 'Shorten URL'}
             </button>
           </div>
+          {user && (
+            <div className="authorized-alias-fields">
+              <label htmlFor="custom-alias">Custom alias or short code</label>
+              <input id="custom-alias" type="text" placeholder="your-custom-name" />
+            </div>
+          )}
         </form>
 
         {status && (

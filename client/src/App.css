@@ -29,6 +29,7 @@ button, input { font: inherit; }
 }
 
 .shortener-card {
+	position: relative;
 	width: min(100%, 720px);
 	padding: clamp(32px, 7vw, 72px);
 	background: var(--paper);

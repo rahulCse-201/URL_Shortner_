@@ -1,0 +1,14 @@
+.auth-card { max-width: 620px; }
+.auth-form { display: grid; gap: 13px; margin-top: 28px; font-family: Arial, sans-serif; }
+.auth-form label { font-size: 12px; font-weight: 700; }
+.auth-form input { width: 100%; }
+.auth-form button { min-height: 48px; margin-top: 8px; }
+.auth-switch { margin: 22px 0 0; color: var(--muted); font-family: Arial, sans-serif; font-size: 13px; }
+.auth-switch a { color: var(--green); font-weight: 700; }
+.sign-in-button { position: absolute; top: 22px; right: 24px; display: inline-flex; margin: 0; padding: 11px 17px; border-radius: 4px; color: #fff; background: var(--green); font-family: Arial, sans-serif; font-size: 12px; font-weight: 700; text-decoration: none; transition: border-radius 260ms ease, transform 200ms ease, box-shadow 200ms ease; }
+.sign-in-button { border: 0; cursor: pointer; }
+.sign-in-button:hover { border-radius: 22px 5px 22px 5px; background: #1e4e38; box-shadow: 0 6px 14px rgba(27, 36, 32, .16); transform: translateY(-2px); }
+.sign-in-button:focus-visible { outline: 3px solid rgba(40, 98, 71, .35); outline-offset: 3px; }
+.authorized-alias-fields { display: grid; gap: 9px; margin: 0 0 22px; font-family: Arial, sans-serif; font-size: 12px; font-weight: 700; }
+.authorized-alias-fields input { width: 100%; font-weight: 400; }
+@media (max-width: 560px) { .sign-in-button { top: 15px; right: 15px; } }

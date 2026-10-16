@@ -36,8 +36,10 @@ app.get('/:shortCode', async(req, res) => {
 
 
 import urlRouter from './routes/url.routes.js';
+import authRouter from './routes/auth.routes.js';
 
 app.use('/api/url', urlRouter);
+app.use('/api/auth', authRouter);
 
 
 
