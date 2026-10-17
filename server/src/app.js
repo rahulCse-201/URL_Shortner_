@@ -25,6 +25,8 @@ app.get('/:shortCode', async(req, res) => {
     if(!url) {
         return res.status(404).json({success: false, message: 'Short URL not found'});
     }
+    console.log("received url from server");
+    console.log("original url:", url.originalUrl);
      return res.redirect(302,url.originalUrl);
   }catch(error){
     console.log(error.message);

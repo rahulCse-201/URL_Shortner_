@@ -11,7 +11,8 @@ const urlSchema = new Schema({
     // },
     shortCode:{
         type: String,
-        required: true
+        required: true,
+        unique: true   // this will help to avoid duplicate short codes in the database
     },
     clicks:{
         type: Number,

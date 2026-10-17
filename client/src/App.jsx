@@ -10,7 +10,7 @@ import './App.css'
 function App() {
   const dispatch = useDispatch()
   const { user, token, status: authStatus } = useSelector(state => state.auth)
-  const [url, setUrl] = useState('')
+  const [urlData, setUrlData] = useState({ url: '', customAlias: '' })
   const [shortUrl, setShortUrl] = useState('')
 
   const [status, setStatus] = useState('')
@@ -77,7 +77,7 @@ function App() {
 
     setIsLoading(true)
     try {
-      const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/url`, { originalUrl: url });
+      const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/url`, urlData);
       if (data.success) {
         setShortUrl(data.shortUrl);
         setStatus('Your shorter link is ready.');
@@ -118,9 +118,9 @@ function App() {
             <input
               id="url"
               type="url"
-              value={url}
+              value={urlData.url}
               onChange={(event) => {
-                setUrl(event.target.value)
+                setUrlData({ ...urlData, url: event.target.value })
                 isValidUrl(event.target.value);
               }}
               placeholder="https://example.com/your-long-link"
@@ -133,7 +133,11 @@ function App() {
           {user && (
             <div className="authorized-alias-fields">
               <label htmlFor="custom-alias">Custom alias or short code</label>
-              <input id="custom-alias" type="text" placeholder="your-custom-name" />
+              <input
+              id="custom-alias" type="text" placeholder="your-custom-name" 
+              value={urlData.customAlias}
+              onChange={(e)=> setUrlData({ ...urlData, customAlias: e.target.value.trim() })}
+              />
             </div>
           )}
         </form>
